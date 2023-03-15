@@ -5,6 +5,12 @@ on:
     branches: [main]
     paths-ignore:
       - .github/**
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'True to release'
+        required: true
+        type: boolean
 
 jobs:
   check:
@@ -27,7 +33,7 @@ jobs:
     permissions:
       contents: write
     needs: check
-    if: ${{ contains(github.event.head_commit.message, ':rocket:') }}
+    if: ${{ contains(github.event.head_commit.message, ':rocket:') || github.event.inputs.release == 'true' }}
     steps:
       - uses: actions/checkout@v3
 
