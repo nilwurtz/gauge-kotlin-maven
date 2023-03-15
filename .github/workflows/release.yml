@@ -1,23 +1,22 @@
 name: release
 
 on:
-#  push:
-#    branches: [master]
-#    paths-ignore:
-#      - metadata.json
-#      - .github
-#      - README.md
-  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore:
+      - metadata.json
+      - .github
+      - README.md
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: package and releases
+      - name: package
         run: |
           ignored="! -path $(pwd) "
           for i in $(cat .templateignore); do
@@ -28,17 +27,26 @@ jobs:
           cp -r $files ./kotlin_maven
           zip -r kotlin_maven.zip ./kotlin_maven;
           openssl sha256 kotlin_maven.zip | cut -d " " -f2 > kotlin_maven.zip.sha256
-          version=$(jq -r ".version" metadata.json)
-          hub release create -m "v$version" "v$version"
-          hub release edit -m "" -a kotlin_maven.zip "v$version"
-          hub release edit -m "" -a kotlin_maven.zip.sha256 "v$version"
 
-      - name: setup git
+      - name: version
+        id: version
         run: |
-          git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
-          git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+          VERSION=$(jq -r ".version" metadata.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: bump version
+      - name: Create release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          files: |
+            kotlin_maven.zip
+            kotlin_maven.zip.sha256
+
+      - name: bump up version
         run: |
           git clean -dfx
           version=$(jq -r ".version" metadata.json | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
@@ -47,3 +55,6 @@ jobs:
           git add metadata.json
           git commit -m ":up: Bumped version to $version"
           git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
+          
+          
+        
