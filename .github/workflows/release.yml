@@ -56,8 +56,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          name: Release ${{ steps.version.outputs.version }}
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
           files: |
             kotlin_maven.zip
             kotlin_maven.zip.sha256
@@ -68,8 +68,8 @@ jobs:
           version=$(jq -r ".version" metadata.json | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
           echo $(jq -r ".version = \"$version\"" metadata.json) | jq . > new_metadata.json
           cat new_metadata.json > metadata.json
-          git config user.name "$(git --no-pager log --format=format:'%an' -n 1)
-          git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)
+          git config user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+          git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
           git add metadata.json
           git commit -m ":up: Bumped version to $version"
           git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
