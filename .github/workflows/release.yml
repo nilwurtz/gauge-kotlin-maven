@@ -1,5 +1,4 @@
 name: release
-description: Make release and automatically bump up version.
 
 on:
 #  push:
