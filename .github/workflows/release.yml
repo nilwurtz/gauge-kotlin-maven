@@ -46,5 +46,5 @@ runs:
           echo $(jq -r ".version = \"$version\"" metadata.json) | jq . > new_metadata.json
           cat new_metadata.json > metadata.json
           git add metadata.json
-          git commit -m "Bumped version to $version"
+          git commit -m ":up: Bumped version to $version"
           git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
