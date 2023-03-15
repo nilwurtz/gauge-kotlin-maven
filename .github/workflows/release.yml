@@ -1,0 +1,50 @@
+name: release
+description: Make release and automatically bump up version.
+
+on:
+#  push:
+#    branches: [master]
+#    paths-ignore:
+#      - metadata.json
+#      - .github
+#      - README.md
+  workflow_dispatch:
+
+runs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: package and releases
+        run: |
+          ignored="! -path $(pwd) "
+          for i in $(cat .templateignore); do
+              ignored+="! -name $i "
+          done
+          files=$(find $(pwd) -maxdepth 1 $ignored)
+          mkdir kotlin_maven
+          cp -r $files ./kotlin_maven
+          zip -r kotlin_maven.zip ./kotlin_maven;
+          openssl sha256 kotlin_maven.zip | cut -d " " -f2 > kotlin_maven.zip.sha256
+          version=$(jq -r ".version" metadata.json)
+          hub release create -m "v$version" "v$version"
+          hub release edit -m "" -a kotlin_maven.zip "v$version"
+          hub release edit -m "" -a kotlin_maven.zip.sha256 "v$version"
+
+      - name: setup git
+        run: |
+          git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+          git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+
+      - name: bump version
+        run: |
+          git clean -dfx
+          version=$(jq -r ".version" metadata.json | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+          echo $(jq -r ".version = \"$version\"" metadata.json) | jq . > new_metadata.json
+          cat new_metadata.json > metadata.json
+          git add metadata.json
+          git commit -m "Bumped version to $version"
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
