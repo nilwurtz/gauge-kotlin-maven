@@ -72,7 +72,7 @@ jobs:
           git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
           git add metadata.json
           git commit -m ":up: Bumped version to $version"
-          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" main
           
           
         
