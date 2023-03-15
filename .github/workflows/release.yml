@@ -46,7 +46,7 @@ jobs:
           files=$(find $(pwd) -maxdepth 1 $ignored)
           mkdir kotlin_maven
           cp -r $files ./kotlin_maven
-          zip -r kotlin_maven.zip ./kotlin_maven;
+          zip -r -X kotlin_maven.zip ./kotlin_maven;
           openssl sha256 kotlin_maven.zip | cut -d " " -f2 > kotlin_maven.zip.sha256
 
       - name: check deploy
