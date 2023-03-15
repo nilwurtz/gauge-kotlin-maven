@@ -1,7 +1,7 @@
 import com.thoughtworks.gauge.Step
 
 class Sample {
-    @Step("hello world")
+    @Step("Hello world")
     fun sampleStep() {
         println("hello world!")
     }

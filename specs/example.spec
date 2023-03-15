@@ -1,4 +1,4 @@
-# test
+# Test
 
-## print hello
-* hello world
+## Print hello
+* Hello world
