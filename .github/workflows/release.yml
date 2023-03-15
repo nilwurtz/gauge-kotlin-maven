@@ -9,10 +9,24 @@ on:
       - README.md
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+
+      - name: Run test
+        run: mvn clean test
+
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    needs: check
     steps:
       - uses: actions/checkout@v3
 
@@ -52,6 +66,8 @@ jobs:
           version=$(jq -r ".version" metadata.json | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
           echo $(jq -r ".version = \"$version\"" metadata.json) | jq . > new_metadata.json
           cat new_metadata.json > metadata.json
+          git config user.name "$(git --no-pager log --format=format:'%an' -n 1)
+          git config user.email "$(git --no-pager log --format=format:'%ae' -n 1)
           git add metadata.json
           git commit -m ":up: Bumped version to $version"
           git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
