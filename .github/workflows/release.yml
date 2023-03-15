@@ -49,6 +49,11 @@ jobs:
           zip -r kotlin_maven.zip ./kotlin_maven;
           openssl sha256 kotlin_maven.zip | cut -d " " -f2 > kotlin_maven.zip.sha256
 
+      - name: check deploy
+        run: |
+          wget -O current.sha256 https://github.com/nilwurtz/gauge-kotlin-maven/releases/latest/download/kotlin_maven.zip.sha256
+          ! diff current.sha256 kotlin_maven.zip.sha256
+
       - name: version
         id: version
         run: |
