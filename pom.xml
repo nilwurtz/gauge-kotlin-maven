@@ -11,7 +11,7 @@
         <java.version>17</java.version>
         <kotlin.version>1.8.22</kotlin.version>
         <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
-        <gauge.java.version>0.9.2</gauge.java.version>
+        <gauge.java.version>0.10.0</gauge.java.version>
         <gauge.maven.version>1.5.0</gauge.maven.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
