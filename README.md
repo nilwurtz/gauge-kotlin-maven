@@ -1,5 +1,5 @@
 # Template kotlin maven
-Kotlin template for Gauge using maven as build tool
+Kotlin template for [Gauge](https://gauge.org/) using maven as build tool
 
 ## Run specs
 
