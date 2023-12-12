@@ -45,6 +45,7 @@
                             <specsDir>specs</specsDir>
                         </configuration>
                         <goals>
+                            <goal>validate</goal>
                             <goal>execute</goal>
                         </goals>
                     </execution>
