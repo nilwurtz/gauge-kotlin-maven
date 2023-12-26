@@ -1,7 +1,7 @@
 {
   "name": "java_maven",
   "description": "Gauge template for Kotlin plugin with Maven as Build tool",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "postInstallCmd": "",
   "postInstallMsg": "Run specifications with \"mvn clean test\" in project root."
 }
