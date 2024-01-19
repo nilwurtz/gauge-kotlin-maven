@@ -10,5 +10,5 @@ gauge init <template-name>
 ## Run specs
 
 ```shell
-mvn clean test-compile gauge:execute
+mvn clean test
 ```
